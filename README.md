@@ -8,6 +8,14 @@ As in the original, meta data is parsed but not used in processing.
 
 Dependencies: [PyYAML](http://pyyaml.org/)
 
+Copyright 2014 Bernhard Fisseni
+
+Based on the meta data extension included with Python-Markdown,
+Copyright 2007-2008 [Waylan Limberg](http://achinghead.com).
+
+License: BSD (see LICENSE.md for details)
+
+
 ## Basic Usage
 
     >>> import markdown
@@ -24,13 +32,6 @@ Dependencies: [PyYAML](http://pyyaml.org/)
     <p>The body. This is paragraph one.</p>
     >>> print(md.Meta) # doctest: +SKIP
     {'blank_data': [''], 'author': ['Waylan Limberg'], 'title': ['Test Doc.']}
- 
-Copyright 2014 Bernhard Fisseni
-
-Based on the meta data extension included with Python-Markdown,
-Copyright 2007-2008 [Waylan Limberg](http://achinghead.com).
-
-License: BSD (see LICENSE.md for details)
 
 
 

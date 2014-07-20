@@ -21,7 +21,7 @@ Basic Usage:
     ...
     ... The body. This is paragraph one.
     ... '''
-    >>> md = markdown.Markdown(['meta'])
+    >>> md = markdown.Markdown(['meta_yaml'])
     >>> print(md.convert(text))
     <p>The body. This is paragraph one.</p>
     >>> print(md.Meta) # doctest: +SKIP
@@ -30,7 +30,7 @@ Basic Usage:
 Make sure text without Meta Data still works (markdown < 1.6b returns a <p>).
 
     >>> text = '    Some Code - not extra lines of meta data.'
-    >>> md = markdown.Markdown(['meta'])
+    >>> md = markdown.Markdown(['meta_yaml'])
     >>> print(md.convert(text))
     <pre><code>Some Code - not extra lines of meta data.
     </code></pre>

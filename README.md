@@ -19,7 +19,7 @@ Dependencies: [PyYAML](http://pyyaml.org/)
     ...
     ... The body. This is paragraph one.
     ... '''
-    >>> md = markdown.Markdown(['meta'])
+    >>> md = markdown.Markdown(['meta_yaml'])
     >>> print(md.convert(text))
     <p>The body. This is paragraph one.</p>
     >>> print(md.Meta) # doctest: +SKIP

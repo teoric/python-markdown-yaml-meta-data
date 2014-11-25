@@ -53,7 +53,10 @@ from markdown import Extension
 from markdown.preprocessors import Preprocessor
 import re
 import yaml
-# from yaml.scanner import ScannerError
+try:
+    from yaml import CSafeLoader as Loader
+except ImportError:
+    from yaml import Loader
 
 
 class MetaYamlExtension (Extension):
@@ -62,7 +65,7 @@ class MetaYamlExtension (Extension):
 
     def extendMarkdown(self, md, md_globals):
         """Add MetaYamlPreprocessor to Markdown instance."""
-        md.preprocessors.add("meta", MetaYamlPreprocessor(md), "_begin")
+        md.preprocessors.add("meta_yaml", MetaYamlPreprocessor(md), ">meta")
 
 
 class MetaYamlPreprocessor(Preprocessor):
@@ -78,24 +81,25 @@ class MetaYamlPreprocessor(Preprocessor):
 
     def run(self, lines):
         """ Parse Meta-Data and store in Markdown.Meta. """
-        in_yaml = False
         yaml_block = []
         line = lines.pop(0)
         if re.match(r'-{3}', line):
-            in_yaml = True
+            while lines:
+                line = lines.pop(0)
+                if re.match(r'(\.{3}|-{3})', line):
+                    break
+                yaml_block.append(line)
         else:
             lines.insert(0, line)
-        while in_yaml and lines:
-            line = lines.pop(0)
-            if re.match(r'(?:\.{3}|-{3})', line):
-                break
-            yaml_block.append(line)
         if yaml_block:
-            yaml_block = "\n".join(yaml_block)
-            meta = yaml.load(yaml_block)
+            meta = yaml.load("\n".join(yaml_block), Loader)
             # case-insensitize meta data keys:
             meta = {
-                dkey.lower(): meta[dkey] for dkey in meta
+                k.lower(): meta[k] for k in meta
+            }
+            # PyMarkdown's Meta compat: ensure everything's a list
+            meta = {
+                k: v if isinstance(v, list) else [v] for k, v in meta.items()
             }
             self.markdown.Meta = meta
         return lines

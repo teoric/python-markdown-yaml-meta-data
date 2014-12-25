@@ -58,6 +58,10 @@ try:
 except ImportError:
     from yaml import Loader
 
+# Override the default string handling function to always return unicode objects
+def construct_yaml_str(self, node):
+    return self.construct_scalar(node)
+Loader.add_constructor(u'tag:yaml.org,2002:str', construct_yaml_str)
 
 class MetaYamlExtension (Extension):
 

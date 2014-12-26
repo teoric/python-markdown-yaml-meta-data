@@ -96,14 +96,10 @@ class MetaYamlPreprocessor(Preprocessor):
             lines.insert(0, line)
         if yaml_block:
             meta = yaml.load("\n".join(yaml_block), Loader)
-            # case-insensitize meta data keys:
-            meta = {
-                k.lower(): meta[k] for k in meta
-            }
-            # PyMarkdown's Meta compat: ensure everything's a list
-            meta = {
-                k: v if isinstance(v, list) else [v] for k, v in meta.items()
-            }
+
+            # Compat with PyMarkdown's meta: Keys are lowercase, values are lists
+            meta = {k.lower(): v if isinstance(v, list) else [v] for k, v in meta.items()}
+
             self.markdown.Meta = meta
         return lines
 

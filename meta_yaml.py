@@ -57,13 +57,14 @@ try:
 except ImportError:
     from yaml import Loader
 
+
 # Override the default string handling function to always return unicode objects
 def construct_yaml_str(self, node):
     return self.construct_scalar(node)
 Loader.add_constructor(u'tag:yaml.org,2002:str', construct_yaml_str)
 
-class MetaYamlExtension (Extension):
 
+class MetaYamlExtension (Extension):
     """Extension for parsing YAML-Metadata with Python-Markdown."""
 
     def extendMarkdown(self, md, md_globals):
@@ -72,7 +73,6 @@ class MetaYamlExtension (Extension):
 
 
 class MetaYamlPreprocessor(Preprocessor):
-
     """
     Get Meta-Data.
 

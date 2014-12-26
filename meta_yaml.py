@@ -51,7 +51,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from markdown import Extension
 from markdown.preprocessors import Preprocessor
-import re
 import yaml
 try:
     from yaml import CSafeLoader as Loader
@@ -87,10 +86,10 @@ class MetaYamlPreprocessor(Preprocessor):
         """ Parse Meta-Data and store in Markdown.Meta. """
         yaml_block = []
         line = lines.pop(0)
-        if re.match(r'-{3}', line):
+        if line == "---":
             while lines:
                 line = lines.pop(0)
-                if re.match(r'(\.{3}|-{3})', line):
+                if line in ("---", "..."):
                     break
                 yaml_block.append(line)
         else:

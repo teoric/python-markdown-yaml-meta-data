@@ -51,7 +51,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from markdown import Extension
 from markdown.preprocessors import Preprocessor
-import re
 import yaml
 try:
     from yaml import CSafeLoader as Loader
@@ -59,8 +58,13 @@ except ImportError:
     from yaml import Loader
 
 
-class MetaYamlExtension (Extension):
+# Override the default string handling function to always return unicode objects
+def construct_yaml_str(self, node):
+    return self.construct_scalar(node)
+Loader.add_constructor(u'tag:yaml.org,2002:str', construct_yaml_str)
 
+
+class MetaYamlExtension (Extension):
     """Extension for parsing YAML-Metadata with Python-Markdown."""
 
     def extendMarkdown(self, md, md_globals):
@@ -69,7 +73,6 @@ class MetaYamlExtension (Extension):
 
 
 class MetaYamlPreprocessor(Preprocessor):
-
     """
     Get Meta-Data.
 
@@ -83,24 +86,20 @@ class MetaYamlPreprocessor(Preprocessor):
         """ Parse Meta-Data and store in Markdown.Meta. """
         yaml_block = []
         line = lines.pop(0)
-        if re.match(r'-{3}', line):
+        if line == "---":
             while lines:
                 line = lines.pop(0)
-                if re.match(r'(\.{3}|-{3})', line):
+                if line in ("---", "..."):
                     break
                 yaml_block.append(line)
         else:
             lines.insert(0, line)
         if yaml_block:
             meta = yaml.load("\n".join(yaml_block), Loader)
-            # case-insensitize meta data keys:
-            meta = {
-                k.lower(): meta[k] for k in meta
-            }
-            # PyMarkdown's Meta compat: ensure everything's a list
-            meta = {
-                k: v if isinstance(v, list) else [v] for k, v in meta.items()
-            }
+
+            # Compat with PyMarkdown's meta: Keys are lowercase, values are lists
+            meta = {k.lower(): v if isinstance(v, list) else [v] for k, v in meta.items()}
+
             self.markdown.Meta = meta
         return lines
 

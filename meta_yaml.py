@@ -53,9 +53,9 @@ from markdown import Extension
 from markdown.preprocessors import Preprocessor
 import yaml
 try:
-    from yaml import CSafeLoader as Loader
+    from yaml import CBaseLoader as Loader
 except ImportError:
-    from yaml import Loader
+    from yaml import BaseLoader
 
 
 # Override the default string handling function to always return unicode objects

@@ -55,7 +55,7 @@ import yaml
 try:
     from yaml import CBaseLoader as Loader
 except ImportError:
-    from yaml import BaseLoader
+    from yaml import BaseLoader as Loader
 
 
 # Override the default string handling function to always return unicode objects
